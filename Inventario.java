@@ -72,6 +72,16 @@ public class Inventario {
         }
         throw new IllegalArgumentException("Insumo no encontrado: " + insumo);
     }
+    
+    public InsumoMedico obtenerInsumoPorNombre(String nombreInsumo) {
+    for (InsumoMedico i : insumos) {
+        if (i.getNombre().equalsIgnoreCase(nombreInsumo)) {
+            return i;
+        }
+    }
+    return null;
+}
+
 
     public void agregarInsumo(String insumo, int cantidad) {
         if (cantidad <= 0) {
