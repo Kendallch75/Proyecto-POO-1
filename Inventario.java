@@ -97,4 +97,34 @@ public class Inventario {
 
         throw new IllegalArgumentException("Insumo no encontrado: " + insumo);
     }
+    
+    public void registrarInsumosEnExpediente(Expediente expediente, List<InsumoMedico> insumosUsados) {
+    ArrayList<String> receta = new ArrayList<>();
+
+    for (InsumoMedico insumo : insumosUsados) {
+        // Verificar existencia y disponibilidad
+        boolean encontrado = false;
+        for (InsumoMedico i : insumos) {
+            if (i.getNombre().equalsIgnoreCase(insumo.getNombre())) {
+                if (i.getCantidad() < insumo.getCantidad()) {
+                    throw new IllegalArgumentException("No hay suficiente cantidad de " + i.getNombre());
+                }
+
+                i.setCantidad(i.getCantidad() - insumo.getCantidad());
+                encontrado = true;
+                break;
+            }
+        }
+
+        if (!encontrado) {
+            throw new IllegalArgumentException("Insumo no encontrado: " + insumo.getNombre());
+        }
+
+        receta.add(insumo.getNombre() + " - Dosis: " + insumo.getDosis() +
+                   " - Cantidad utilizada: " + insumo.getCantidad());
+    }
+
+    expediente.getHistorialDeRecetas().add(receta);
+}
+
 }
