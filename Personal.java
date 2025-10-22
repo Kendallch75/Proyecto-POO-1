@@ -14,6 +14,7 @@ public class Personal {
     private String cedula;
     private  String usuario; 
     private String password; 
+    private ArrayList<Cita> listaCitas;
     
     //Constructor vacio
     public Personal() {
@@ -23,6 +24,7 @@ public class Personal {
         this.cedula = "";
         this.usuario = "";
         this.password = "";
+        this.listaCitas = new ArrayList<>(); 
     }
     //Constructor parametrico
     public Personal(String nombre, String cargo, String jornada, String cedula, String usuario, String password){
@@ -32,6 +34,7 @@ public class Personal {
         this.cedula = cedula;
         this.usuario = usuario;
         this.password = password;
+        this.listaCitas = new ArrayList<>(); 
     }
 
    //Setters y Getters 
@@ -65,5 +68,16 @@ public class Personal {
     }
     public String getPassword() {
         return password; 
+    }
+    public ArrayList<Cita> getlistaCitas() {
+        return listaCitas;
+    }
+
+    public void setlistaCitas(ArrayList<Cita> citas) {
+        this.listaCitas = citas;
+    }
+
+    public void agregarlistaCitas(Cita nuevaCita) {
+        this.listaCitas.add(nuevaCita);
     }
 }
