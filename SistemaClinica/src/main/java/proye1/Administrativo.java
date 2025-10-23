@@ -48,9 +48,20 @@ public class Administrativo extends Personal {
     // 👥 GESTIÓN DE PERSONAL
     // =========================
     public void registrarPersonal(Personal p) {
-        if (p != null && !personal.contains(p)) {
-            personal.add(p);
-            System.out.println("✅ Personal agregado: " + p.getNombre());
+        if (p != null) {
+            // ⭐⭐ CORRECIÓN: Evitar duplicados usando usuario como identificador
+            boolean yaExiste = false;
+            for (Personal existente : personal) {
+                if (existente.getUsuario().equalsIgnoreCase(p.getUsuario())) {
+                    yaExiste = true;
+                    break;
+                }
+            }
+            
+            if (!yaExiste) {
+                personal.add(p);
+                System.out.println("✅ Personal agregado: " + p.getNombre() + " (" + p.getCargo() + ")");
+            }
         }
     }
 
@@ -135,7 +146,7 @@ public class Administrativo extends Personal {
     public void mostrarPersonal() {
         System.out.println("=== Lista de Personal ===");
         for (Personal p : personal) {
-            System.out.println("- " + p);
+            System.out.println("- " + p + " (Usuario: " + p.getUsuario() + ")");
         }
     }
 
@@ -152,45 +163,46 @@ public class Administrativo extends Personal {
             System.out.println("- " + c);
         }
     }
+    
     // Agregar este método en la clase Administrativo
-// ⭐ AGREGAR ESTE MÉTODO EN LA SECCIÓN "💥 GESTIÓN DE PERSONAL"
-public Personal crearPersonal(String tipo, String nombre, String cargo, String jornada, 
-                              String cedula, String usuario, String password, 
-                              String especialidad, int colegiado) {
-    Personal nuevoPersonal = null;
-    
-    switch (tipo.toLowerCase()) {
-        case "medico":
-        case "médico":
-            nuevoPersonal = new Medico(nombre, cargo, jornada, cedula, usuario, 
-                                       password, especialidad, colegiado);
-            System.out.println("👨‍⚕️ Médico creado: " + nombre + " - " + especialidad);
-            break;
-            
-        case "enfermero":
-            nuevoPersonal = new Enfermero(nombre, cargo, jornada, cedula, usuario, 
-                                          password, colegiado);
-            System.out.println("👩‍⚕️ Enfermero creado: " + nombre);
-            break;
-            
-        case "administrativo":
-            nuevoPersonal = new Administrativo(nombre, cargo, jornada, cedula, 
-                                               usuario, password);
-            System.out.println("👔 Administrativo creado: " + nombre);
-            break;
-            
-        default:
-            System.out.println("❌ Tipo de personal no válido: " + tipo);
-            return null;
+    // ⭐ AGREGAR ESTE MÉTODO EN LA SECCIÓN "💥 GESTIÓN DE PERSONAL"
+    public Personal crearPersonal(String tipo, String nombre, String cargo, String jornada, 
+                                  String cedula, String usuario, String password, 
+                                  String especialidad, int colegiado) {
+        Personal nuevoPersonal = null;
+        
+        switch (tipo.toLowerCase()) {
+            case "medico":
+            case "médico":
+                nuevoPersonal = new Medico(nombre, cargo, jornada, cedula, usuario, 
+                                           password, especialidad, colegiado);
+                System.out.println("👨‍⚕️ Médico creado: " + nombre + " - " + especialidad);
+                break;
+                
+            case "enfermero":
+                nuevoPersonal = new Enfermero(nombre, cargo, jornada, cedula, usuario, 
+                                              password, colegiado);
+                System.out.println("👩‍⚕️ Enfermero creado: " + nombre);
+                break;
+                
+            case "administrativo":
+                nuevoPersonal = new Administrativo(nombre, cargo, jornada, cedula, 
+                                                   usuario, password);
+                System.out.println("👔 Administrativo creado: " + nombre);
+                break;
+                
+            default:
+                System.out.println("❌ Tipo de personal no válido: " + tipo);
+                return null;
+        }
+        
+        // Registrar el personal en la lista
+        if (nuevoPersonal != null) {
+            registrarPersonal(nuevoPersonal);
+        }
+        
+        return nuevoPersonal;
     }
-    
-    // Registrar el personal en la lista
-    if (nuevoPersonal != null) {
-        registrarPersonal(nuevoPersonal);
-    }
-    
-    return nuevoPersonal;
-}
 
     @Override
     public String toString() {

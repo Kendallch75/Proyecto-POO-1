@@ -48,6 +48,9 @@ public class VentanaPrincipal extends JFrame {
         adminPrincipal = new Administrativo("Laura Soto", "Administrativo", "Diurna", 
                                            "5555", "lsoto", "admin123");
         
+        // ⭐⭐ CORRECIÓN: Agregar el administrativo principal a su propia lista
+        adminPrincipal.registrarPersonal(adminPrincipal);
+        
         // Médicos de prueba
         Medico medico1 = new Medico("Dr. Mora", "Médico", "Diurna", "1234", "drmora", 
                                     "pass123", "Cardiología", 7890);

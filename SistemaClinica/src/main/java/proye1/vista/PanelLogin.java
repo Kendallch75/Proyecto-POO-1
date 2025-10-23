@@ -92,6 +92,14 @@ public class PanelLogin extends JPanel {
             return;
         }
         
+        // ⭐⭐ CORRECIÓN: Mostrar información de depuración
+        System.out.println("=== DEPURACIÓN LOGIN ===");
+        System.out.println("Usuarios en el sistema:");
+        for (Personal p : admin.getPersonal()) {
+            System.out.println("- " + p.getUsuario() + " : " + p.getPassword() + " (" + p.getNombre() + ")");
+        }
+        System.out.println("Intentando login con: " + usuario + " / " + password);
+        
         // Verificar si existe el personal con esas credenciales
         for (Personal p : admin.getPersonal()) {
             if (p.getUsuario().equalsIgnoreCase(usuario) && p.getPassword().equals(password)) {
@@ -112,6 +120,12 @@ public class PanelLogin extends JPanel {
         }
 
         lblMensaje.setText("Usuario o contraseña incorrectos.");
+        JOptionPane.showMessageDialog(this,
+                "Credenciales incorrectas. Usuarios disponibles:\n" +
+                "- lsoto / admin123 (Administrativo)\n" +
+                "- drmora / pass123 (Médico)\n" +
+                "- dvega / doc123 (Médico)",
+                "Error de login", JOptionPane.ERROR_MESSAGE);
     }
     
     // Método para obtener el usuario logueado
