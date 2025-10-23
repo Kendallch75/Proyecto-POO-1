@@ -13,6 +13,7 @@ public class PanelLogin extends JPanel {
     private JPasswordField txtPassword;
     private JButton btnLogin;
     private JLabel lblMensaje;
+    private Personal usuarioLogueado;
 
     public PanelLogin(VentanaPrincipal ventana) {
         this.ventana = ventana;
@@ -66,6 +67,9 @@ public class PanelLogin extends JPanel {
 
         // --- Acción del botón ---
         btnLogin.addActionListener(e -> validarLogin());
+        
+        // --- Enter para login ---
+        txtPassword.addActionListener(e -> validarLogin());
     }
 
     // ===================================
@@ -91,6 +95,7 @@ public class PanelLogin extends JPanel {
         // Verificar si existe el personal con esas credenciales
         for (Personal p : admin.getPersonal()) {
             if (p.getUsuario().equalsIgnoreCase(usuario) && p.getPassword().equals(password)) {
+                usuarioLogueado = p; // ⭐ GUARDAR USUARIO LOGUEADO
                 lblMensaje.setText("");
                 JOptionPane.showMessageDialog(this,
                         "Bienvenido " + p.getNombre() + " (" + p.getCargo() + ")",
@@ -100,12 +105,17 @@ public class PanelLogin extends JPanel {
                 txtUsuario.setText("");
                 txtPassword.setText("");
                 
-                // Mostrar panel de menú principal
-                ventana.mostrarPanel("Menu");
+                // Mostrar panel de menú principal y pasar usuario logueado
+                ventana.mostrarPanel("Menu", usuarioLogueado);
                 return;
             }
         }
 
         lblMensaje.setText("Usuario o contraseña incorrectos.");
+    }
+    
+    // Método para obtener el usuario logueado
+    public Personal getUsuarioLogueado() {
+        return usuarioLogueado;
     }
 }

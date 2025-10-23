@@ -105,7 +105,12 @@ public class VentanaPrincipal extends JFrame {
     // ======================================
     // 🔁 Cambiar entre paneles
     // ======================================
-    public void mostrarPanel(String nombre) {
+    public void mostrarPanel(String nombre, Personal usuario) {
+        // Actualizar el menú principal con el usuario logueado
+        if (nombre.equals("Menu")) {
+            panelMenu.setUsuarioLogueado(usuario);
+        }
+        
         // Actualizar datos entre paneles antes de cambiar
         if (nombre.equals("Expediente")) {
             panelExpediente.actualizarPacientes(panelPacientes.getPacientes());
@@ -115,6 +120,11 @@ public class VentanaPrincipal extends JFrame {
         }
         
         layout.show(panelContenedor, nombre);
+    }
+    
+    // Mantener el método original para compatibilidad
+    public void mostrarPanel(String nombre) {
+        mostrarPanel(nombre, null);
     }
     
     // ⭐⭐ NUEVO MÉTODO: Agregar médico a la lista

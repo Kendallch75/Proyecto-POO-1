@@ -3,14 +3,18 @@ package proye1.vista;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import proye1.*;
 
 public class PanelMenuPrincipal extends JPanel {
     
     private VentanaPrincipal ventana;
     private JButton btnPacientes, btnCitas, btnExpedientes, btnInventario, btnPersonal, btnSalir;
+    private Personal usuarioLogueado;
     
     public PanelMenuPrincipal(VentanaPrincipal ventana) {
         this.ventana = ventana;
+        this.usuarioLogueado = null;
+        
         setLayout(new BorderLayout());
         setBackground(new Color(230, 245, 255));
         
@@ -30,14 +34,14 @@ public class PanelMenuPrincipal extends JPanel {
         btnCitas = crearBoton("📅 Gestionar Citas");
         btnExpedientes = crearBoton("📋 Ver Expedientes");
         btnInventario = crearBoton("💊 Inventario Médico");
-        btnPersonal = crearBoton("👥 Registrar Personal");  // ⭐ NUEVO BOTÓN
+        btnPersonal = crearBoton("👥 Registrar Personal");
         btnSalir = crearBoton("🚪 Cerrar Sesión");
         
         panelBotones.add(btnPacientes);
         panelBotones.add(btnCitas);
         panelBotones.add(btnExpedientes);
         panelBotones.add(btnInventario);
-        panelBotones.add(btnPersonal);  // ⭐ AGREGAR AL PANEL
+        panelBotones.add(btnPersonal);
         panelBotones.add(btnSalir);
         
         add(panelBotones, BorderLayout.CENTER);
@@ -47,8 +51,23 @@ public class PanelMenuPrincipal extends JPanel {
         btnCitas.addActionListener(e -> abrirPanel("Citas"));
         btnExpedientes.addActionListener(e -> abrirPanel("Expediente"));
         btnInventario.addActionListener(e -> abrirPanel("Inventario"));
-        btnPersonal.addActionListener(e -> abrirPanel("RegistroPersonal"));  // ⭐ NUEVO EVENTO
+        btnPersonal.addActionListener(e -> verificarAccesoRegistroPersonal());
         btnSalir.addActionListener(e -> cerrarSesion());
+        
+        // Inicializar estado de botones
+        actualizarBotonesSegunPermisos();
+    }
+    
+    // ⭐ NUEVO MÉTODO: Verificar acceso al registro de personal
+    private void verificarAccesoRegistroPersonal() {
+        if (usuarioLogueado instanceof Administrativo) {
+            abrirPanel("RegistroPersonal");
+        } else {
+            JOptionPane.showMessageDialog(this,
+                "❌ Acción restringida\n\nSolo el personal administrativo puede registrar nuevo personal.",
+                "Permiso denegado",
+                JOptionPane.WARNING_MESSAGE);
+        }
     }
     
     private void abrirPanel(String nombre) {
@@ -61,7 +80,37 @@ public class PanelMenuPrincipal extends JPanel {
                 "Confirmar salida",
                 JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
+            usuarioLogueado = null;
             ventana.mostrarPanel("Login");
+        }
+    }
+    
+    // ⭐ NUEVO MÉTODO: Establecer usuario logueado
+    public void setUsuarioLogueado(Personal usuario) {
+        this.usuarioLogueado = usuario;
+        actualizarBotonesSegunPermisos();
+    }
+    
+    // ⭐ NUEVO MÉTODO: Actualizar permisos de botones
+    private void actualizarBotonesSegunPermisos() {
+        if (usuarioLogueado != null) {
+            // Solo los administrativos pueden registrar personal
+            boolean esAdministrativo = usuarioLogueado instanceof Administrativo;
+            btnPersonal.setEnabled(esAdministrativo);
+            
+            // Mostrar tooltip explicativo
+            if (!esAdministrativo) {
+                btnPersonal.setToolTipText("Acción restringida: Solo disponible para personal administrativo");
+                // Cambiar color cuando está deshabilitado
+                btnPersonal.setBackground(new Color(180, 180, 180));
+            } else {
+                btnPersonal.setToolTipText("Registrar nuevo personal en el sistema");
+                btnPersonal.setBackground(new Color(100, 180, 255));
+            }
+        } else {
+            btnPersonal.setEnabled(false);
+            btnPersonal.setToolTipText("Inicie sesión para ver permisos");
+            btnPersonal.setBackground(new Color(180, 180, 180));
         }
     }
     
@@ -77,15 +126,19 @@ public class PanelMenuPrincipal extends JPanel {
         boton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
-        // Efecto hover
+        // Efecto hover solo si está habilitado
         boton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                boton.setBackground(new Color(70, 150, 255));
+                if (boton.isEnabled()) {
+                    boton.setBackground(new Color(70, 150, 255));
+                }
             }
             @Override
             public void mouseExited(MouseEvent e) {
-                boton.setBackground(new Color(100, 180, 255));
+                if (boton.isEnabled()) {
+                    boton.setBackground(new Color(100, 180, 255));
+                }
             }
         });
         
