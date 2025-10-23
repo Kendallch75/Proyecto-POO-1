@@ -1,4 +1,4 @@
-package Modelo;
+package proye1;
 
 
 import java.io.*;
